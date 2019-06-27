@@ -25,59 +25,72 @@ import softs.gustavo.testedemapa.model.Usuario;
 
 public class LoginActivity extends AppCompatActivity {
 
-  private EditText campoEmail, campoSenha;
-  private FirebaseAuth autenticacao;
+    private EditText campoEmail, campoSenha;
+    private Button btnLogar;
+    private FirebaseAuth autenticacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // inicializar componentes
-        campoEmail = findViewById(R.id.txtEmailCadastro);
-        campoSenha = findViewById(R.id.txtPasswordCadastro);
+        campoEmail = findViewById(R.id.txtLoginEmail);
+        campoSenha = findViewById(R.id.txtLoginPassword);
+        btnLogar = findViewById(R.id.button_logar);
+
+        btnLogar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                entrarLoginUsuario();
+            }
+        });
 
     }
-    public void EntrarLoginUsuario(View view){
+
+    private void entrarLoginUsuario() {
         String textoEmail = campoEmail.getText().toString();
         String textoSenha = campoSenha.getText().toString();
-        if(!textoEmail.isEmpty()){
-            if(!textoSenha.isEmpty()){
+        if (!textoEmail.isEmpty()) {
+            if (!textoSenha.isEmpty()) {
                 Usuario usuario = new Usuario();
                 usuario.setEmail(textoEmail);
                 usuario.setSenha(textoSenha);
 
-                LogarUsuario( usuario);
+                LogarUsuario(usuario);
 
-            }else{
-                Toast.makeText(LoginActivity.this, "Preencha a Senha",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(LoginActivity.this, "Preencha a Senha", Toast.LENGTH_SHORT).show();
             }
 
-        }else{
-            Toast.makeText(LoginActivity.this, "Preencha o Email",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(LoginActivity.this, "Preencha o Email", Toast.LENGTH_SHORT).show();
         }
 
     }
-    public void LogarUsuario(Usuario usuario){
+
+    public void LogarUsuario(Usuario usuario) {
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         autenticacao.signInWithEmailAndPassword(
                 usuario.getEmail(), usuario.getSenha()
         ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     UsuarioFirebase.redirecionaUsuarioLogado(LoginActivity.this);
-                }else{
+                } else {
                     String execao = "";
-                    try{
+                    try {
                         throw task.getException();
-                    }catch (FirebaseAuthInvalidUserException e){
+                    } catch (FirebaseAuthInvalidUserException e) {
                         execao = "Usuario nao cadastrado.";
-                    }catch ( FirebaseAuthInvalidCredentialsException e){
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
                         execao = "E-mail nao corresponde a um usuario";
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         execao = "Erro ao cadastrar usuario:" + e.getMessage();
-                        e.printStackTrace();;
-                    } Toast.makeText(LoginActivity.this, execao, Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                        ;
+                    }
+                    Toast.makeText(LoginActivity.this, execao, Toast.LENGTH_SHORT).show();
 
                 }
             }
