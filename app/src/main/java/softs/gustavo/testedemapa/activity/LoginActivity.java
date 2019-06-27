@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                 usuario.setEmail(textoEmail);
                 usuario.setSenha(textoSenha);
 
-                LogarUsuario(usuario);
+                logarUsuario(usuario);
 
             } else {
                 Toast.makeText(LoginActivity.this, "Preencha a Senha", Toast.LENGTH_SHORT).show();
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void LogarUsuario(Usuario usuario) {
+    public void logarUsuario(Usuario usuario) {
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         autenticacao.signInWithEmailAndPassword(
                 usuario.getEmail(), usuario.getSenha()
