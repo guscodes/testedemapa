@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         campoSenha = findViewById(R.id.txtPasswordCadastro);
 
     }
-    public void EntrarLoginUsuario(View view){
+    public void entrarLoginUsuario(View view){
         String textoEmail = campoEmail.getText().toString();
         String textoSenha = campoSenha.getText().toString();
         if(!textoEmail.isEmpty()){
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
                 usuario.setEmail(textoEmail);
                 usuario.setSenha(textoSenha);
 
-                LogarUsuario( usuario);
+                logarUsuario(usuario);
 
             }else{
                 Toast.makeText(LoginActivity.this, "Preencha a Senha",Toast.LENGTH_SHORT).show();
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-    public void LogarUsuario(Usuario usuario){
+    public void logarUsuario(Usuario usuario){
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         autenticacao.signInWithEmailAndPassword(
                 usuario.getEmail(), usuario.getSenha()

@@ -111,7 +111,7 @@ public class CadastroActivity extends AppCompatActivity {
                  }catch (FirebaseAuthInvalidCredentialsException e){
                      excecao = "Por favor, digite um e-mail valido!";
                  }catch (FirebaseAuthUserCollisionException e){
-                     excecao = "Esta conta ja foi cadastrada"; // aki mandaram eu coloca ESTE CONTA
+                     excecao = "Esta conta ja foi cadastrada";
                  } catch (Exception e){
                      excecao = "Erro ao cadastrar usuario" + e.getMessage();
                      e.printStackTrace();
