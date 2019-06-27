@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">testedemapa</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_cadastro">Cadastrar uma conta</string>
+    <string name="title_Login">Acessar minha conta</string>
+    <string name="Checador_usuario">Usuario</string>
+    <string name="Checador_Motorista">Motorista</string>
+
+</resources>
