@@ -40,7 +40,7 @@ public class CadastroActivity extends AppCompatActivity {
         SwitchTipoUsuario = findViewById(R.id.switch1);
 
     }
-    public void ValidarCadastroUsuario(View view){
+    public void validarCadastroUsuario(View view){
         // recupera texto
         String textoNome = campoNome.getText().toString();
         String textoEmail = campoEmail.getText().toString();
@@ -55,7 +55,7 @@ public class CadastroActivity extends AppCompatActivity {
                     usuario.setSenha(textoSenha);
                     usuario.setTipo( verificarTipoUsuario ());
 
-                    CadastrarUsuario(usuario);
+                    cadastrarUsuario(usuario);
                 }else{
                     Toast.makeText(CadastroActivity.this, "Preencha a senha", Toast.LENGTH_SHORT);
                 }
@@ -71,7 +71,7 @@ public class CadastroActivity extends AppCompatActivity {
 
 
     }
-    public void CadastrarUsuario(final Usuario usuario){
+    public void cadastrarUsuario(final Usuario usuario){
      autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
      autenticacao.createUserWithEmailAndPassword(
              usuario.getEmail(),
