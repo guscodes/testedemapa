@@ -15,12 +15,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.tela_principal);
         getSupportActionBar().hide();
     }
-    public void abrirTelaLogin (View view){
+
+    public void abrirTelaLogin(View view) {
         startActivity(new Intent(this, LoginActivity.class));
 
 
     }
-    public void abrirTelaCadastro (View view){
+
+    public void abrirTelaCadastro(View view) {
         startActivity(new Intent(this, CadastroActivity.class));
 
     }

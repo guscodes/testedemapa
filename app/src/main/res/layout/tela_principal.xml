@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="AbrirTelaLogin"
+            android:onClick="abrirTelaLogin"
             android:text="Entrar" />
 
         <Button
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="AbrirTelaCadastro"
+            android:onClick="abrirTelaCadastro"
             android:text="Cadastrar" />
     </LinearLayout>
 

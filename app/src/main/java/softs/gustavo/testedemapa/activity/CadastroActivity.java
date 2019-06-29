@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,8 +17,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
-import org.w3c.dom.Text;
-
 import softs.gustavo.testedemapa.R;
 import softs.gustavo.testedemapa.config.ConfiguracaoFireBase;
 import softs.gustavo.testedemapa.helper.UsuarioFirebase;
@@ -27,104 +24,134 @@ import softs.gustavo.testedemapa.model.Usuario;
 
 public class CadastroActivity extends AppCompatActivity {
     private EditText campoNome, campoEmail, campoSenha;
-    private Switch SwitchTipoUsuario;
+    private Switch switchTipoUsuario;
+
     private FirebaseAuth autenticacao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
-        //inicia componente
-        campoNome  = findViewById(R.id.txtNomeCompleto);
-        campoEmail = findViewById(R.id.txtEmailCadastro);
-        campoSenha = findViewById(R.id.txtPasswordCadastro);
-        SwitchTipoUsuario = findViewById(R.id.switch1);
+
+        //Inicializar componentes
+        campoNome = findViewById(R.id.txtNomeCompleto);
+        campoEmail = findViewById(R.id.editCadastroEmail);
+        campoSenha = findViewById(R.id.editCadastroSenha);
+        switchTipoUsuario = findViewById(R.id.switch1);
 
     }
-    public void validarCadastroUsuario(View view){
-        // recupera texto
+
+    public void validarCadastroUsuario(View view) {
+
+        //Recuperar textos dos campos
         String textoNome = campoNome.getText().toString();
         String textoEmail = campoEmail.getText().toString();
         String textoSenha = campoSenha.getText().toString();
-        // verifica se esta vazio
-        if(!textoNome.isEmpty()){
-            if(!textoEmail.isEmpty()){
-                if(!textoSenha.isEmpty()){
+
+        if (!textoNome.isEmpty()) {//verifica nome
+            if (!textoEmail.isEmpty()) {//verifica e-mail
+                if (!textoSenha.isEmpty()) {//verifica senha
+
                     Usuario usuario = new Usuario();
                     usuario.setNome(textoNome);
                     usuario.setEmail(textoEmail);
                     usuario.setSenha(textoSenha);
-                    usuario.setTipo( verificarTipoUsuario ());
+                    usuario.setTipo(verificaTipoUsuario());
 
                     cadastrarUsuario(usuario);
-                }else{
-                    Toast.makeText(CadastroActivity.this, "Preencha a senha", Toast.LENGTH_SHORT);
+
+                } else {
+                    Toast.makeText(CadastroActivity.this,
+                            "Preencha a senha!",
+                            Toast.LENGTH_SHORT).show();
                 }
-
-            }else{
-                Toast.makeText(CadastroActivity.this, "Preencha o Email", Toast.LENGTH_SHORT);
+            } else {
+                Toast.makeText(CadastroActivity.this,
+                        "Preencha o email!",
+                        Toast.LENGTH_SHORT).show();
             }
-        }else {
-
-            Toast.makeText(CadastroActivity.this, "Preencha o nome", Toast.LENGTH_SHORT);
-
+        } else {
+            Toast.makeText(CadastroActivity.this,
+                    "Preencha o nome!",
+                    Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void cadastrarUsuario(final Usuario usuario) {
+
+        autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
+        autenticacao.createUserWithEmailAndPassword(
+                usuario.getEmail(),
+                usuario.getSenha()
+        ).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (task.isSuccessful()) {
+
+                    try {
+
+                        String idUsuario = task.getResult().getUser().getUid();
+                        usuario.setId(idUsuario);
+                        usuario.salvar();
+
+                        //Atualizar nome no UserProfile
+                        UsuarioFirebase.atualizarNomeUsuario(usuario.getNome());
+
+                        // Redireciona o usuário com base no seu tipo
+                        // Se o usuário for passageiro chama a activity maps
+                        // senão chama a activity requisicoes
+                        if (verificaTipoUsuario() == "P") {
+                            startActivity(new Intent(CadastroActivity.this, MapsActivity.class));
+                            finish();
+
+                            Toast.makeText(CadastroActivity.this,
+                                    "Sucesso ao cadastrar Passageiro!",
+                                    Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            startActivity(new Intent(CadastroActivity.this, RequisicoesActivity.class));
+                            finish();
+
+                            Toast.makeText(CadastroActivity.this,
+                                    "Sucesso ao cadastrar Motorista!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+
+                    String excecao = "";
+                    try {
+                        throw task.getException();
+                    } catch (FirebaseAuthWeakPasswordException e) {
+                        excecao = "Digite uma senha mais forte!";
+                    } catch (FirebaseAuthInvalidCredentialsException e) {
+                        excecao = "Por favor, digite um e-mail válido";
+                    } catch (FirebaseAuthUserCollisionException e) {
+                        excecao = "Este conta já foi cadastrada";
+                    } catch (Exception e) {
+                        excecao = "Erro ao cadastrar usuário: " + e.getMessage();
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(CadastroActivity.this,
+                            excecao,
+                            Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
 
     }
-    public void cadastrarUsuario(final Usuario usuario){
-     autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
-     autenticacao.createUserWithEmailAndPassword(
-             usuario.getEmail(),
-             usuario.getSenha()
-     ).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-         @Override
-         public void onComplete(@NonNull Task<AuthResult> task) {
-             if (task.isSuccessful()){
-                 try {
-                     String idUsuario = task.getResult().getUser().getUid();
-                     usuario.setId(idUsuario);
-                     usuario.salvar();
-                     // atualiar nome de perfil
-                     UsuarioFirebase.atualizarNomeUsuario(usuario.getNome());
 
-                     if (verificarTipoUsuario() == "P") {
-                         startActivity(new Intent(CadastroActivity.this, MapsActivity.class));
-                         finish();
-                         Toast.makeText(CadastroActivity.this, "Sucesso ao cadastrar Passageiro!", Toast.LENGTH_SHORT).show();
-
-                     } else {
-                         startActivity(new Intent(CadastroActivity.this, RequisicoesActivity.class));
-                         finish();
-                         Toast.makeText(CadastroActivity.this, "Sucesso ao cadastrar Motorista", Toast.LENGTH_SHORT).show();
-                     }
-                 }catch (Exception e){
-                     e.printStackTrace();
-
-                 }
-             }else{
-                 String excecao = "";
-                 try{
-                     throw task.getException();
-                 } catch (FirebaseAuthWeakPasswordException e){
-                     excecao = "Digite uma senha mais forte!";
-
-                 }catch (FirebaseAuthInvalidCredentialsException e){
-                     excecao = "Por favor, digite um e-mail valido!";
-                 }catch (FirebaseAuthUserCollisionException e){
-                     excecao = "Esta conta ja foi cadastrada"; // aki mandaram eu coloca ESTE CONTA
-                 } catch (Exception e){
-                     excecao = "Erro ao cadastrar usuario" + e.getMessage();
-                     e.printStackTrace();
-                     Toast.makeText(CadastroActivity.this, excecao, Toast.LENGTH_SHORT).show();
-
-                 }
-             }
-         }
-     });
-
+    public String verificaTipoUsuario() {
+        return switchTipoUsuario.isChecked() ? "M" : "P";
     }
-    public String verificarTipoUsuario(){
-        return SwitchTipoUsuario.isChecked() ? "M": "P"; // operador tenario;
 
-    }
 }

@@ -21,60 +21,72 @@ import softs.gustavo.testedemapa.config.ConfiguracaoFireBase;
 import softs.gustavo.testedemapa.model.Usuario;
 
 public class UsuarioFirebase {
-    public static FirebaseUser getUsuarioAtual(){
+    public static FirebaseUser getUsuarioAtual() {
         FirebaseAuth usuario = ConfiguracaoFireBase.getFirebaseAutenticacao();
         return usuario.getCurrentUser();
+    }
+
+    public static boolean atualizarNomeUsuario(String nome) {
+
+        try {
+
+            FirebaseUser user = getUsuarioAtual();
+            UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(nome)
+                    .build();
+            user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isSuccessful()) {
+                        Log.d("Perfil", "Erro ao atualizar nome de perfil.");
+                    }
+                }
+            });
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
     }
 
-    public static boolean atualizarNomeUsuario(String nome){
-       try{
-           FirebaseUser user = getUsuarioAtual();
-           UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
-                   .setDisplayName(nome).build();
-           user.updateProfile(profile).addOnCompleteListener(new OnCompleteListener<Void>() {
-               @Override
-               public void onComplete(@NonNull Task<Void> task) {
-                 if(!task.isSuccessful()){
-                     Log.d("Perfil", "Erro ao atualizar nome de perfil");
-                 }
-               }
-           });
-           return true;
+    public static void redirecionaUsuarioLogado(final Activity activity) {
 
-       }catch (Exception e){
-        e.printStackTrace();
-        return false;
-       }
-    }
-    public static void redirecionaUsuarioLogado(final Activity activity){
-        DatabaseReference usuarioRef = ConfiguracaoFireBase.getFirebaseDatabase()
-                .child("Usuarios")
-                .child(getIndentificadorUsuario());
-        usuarioRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                String TipoUsuario = usuario.getTipo();
-                if (TipoUsuario.equals("M")){
-                    Intent i =new Intent(activity, RequisicoesActivity.class);
-                    activity.startActivity(i);
+        FirebaseUser user = getUsuarioAtual();
+        if (user != null) {
+            DatabaseReference usuariosRef = ConfiguracaoFireBase.getFirebaseDatabase()
+                    .child("usuarios")
+                    .child(getIdentificadorUsuario());
+            usuariosRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                }else{
-                    Intent i =new Intent(activity, MapsActivity.class);
-                    activity.startActivity(i);
+                    Usuario usuario = dataSnapshot.getValue(Usuario.class);
+
+                    String tipoUsuario = usuario.getTipo();
+                    if (tipoUsuario.equals("M")) {
+                        Intent i = new Intent(activity, RequisicoesActivity.class);
+                        activity.startActivity(i);
+                    } else {
+                        Intent i = new Intent(activity, MapsActivity.class);
+                        activity.startActivity(i);
+                    }
 
                 }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
 
-            }
-        });
     }
-    public static String getIndentificadorUsuario(){
+
+    public static String getIdentificadorUsuario() {
         return getUsuarioAtual().getUid();
     }
+
 }

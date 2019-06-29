@@ -1,9 +1,8 @@
 package softs.gustavo.testedemapa.activity;
 
-import android.app.usage.UsageEvents;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
-import org.w3c.dom.Text;
-
 import softs.gustavo.testedemapa.R;
 import softs.gustavo.testedemapa.config.ConfiguracaoFireBase;
 import softs.gustavo.testedemapa.helper.UsuarioFirebase;
@@ -29,29 +26,24 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogar;
     private FirebaseAuth autenticacao;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // inicializar componentes
+
+        //Inicializar componentes
         campoEmail = findViewById(R.id.txtLoginEmail);
         campoSenha = findViewById(R.id.txtLoginPassword);
-        btnLogar = findViewById(R.id.button_logar);
-
-        btnLogar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                entrarLoginUsuario();
-            }
-        });
 
     }
 
-    private void entrarLoginUsuario() {
+    public void validarLoginUsuario(View view) {
+
+        //Recuperar textos dos campos
         String textoEmail = campoEmail.getText().toString();
         String textoSenha = campoSenha.getText().toString();
-        if (!textoEmail.isEmpty()) {
-            if (!textoSenha.isEmpty()) {
+
+        if (!textoEmail.isEmpty()) {//verifica e-mail
+            if (!textoSenha.isEmpty()) {//verifica senha
                 Usuario usuario = new Usuario();
                 usuario.setEmail(textoEmail);
                 usuario.setSenha(textoSenha);
@@ -59,16 +51,20 @@ public class LoginActivity extends AppCompatActivity {
                 logarUsuario(usuario);
 
             } else {
-                Toast.makeText(LoginActivity.this, "Preencha a Senha", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this,
+                        "Preencha a senha!",
+                        Toast.LENGTH_SHORT).show();
             }
-
         } else {
-            Toast.makeText(LoginActivity.this, "Preencha o Email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,
+                    "Preencha o email!",
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
 
     public void logarUsuario(Usuario usuario) {
+
         autenticacao = ConfiguracaoFireBase.getFirebaseAutenticacao();
         autenticacao.signInWithEmailAndPassword(
                 usuario.getEmail(), usuario.getSenha()
@@ -76,21 +72,27 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+
+                    //Verificar o tipo de usuário logado
+                    // "Motorista" / "Passageiro"
                     UsuarioFirebase.redirecionaUsuarioLogado(LoginActivity.this);
+
                 } else {
-                    String execao = "";
+
+                    String excecao = "";
                     try {
                         throw task.getException();
                     } catch (FirebaseAuthInvalidUserException e) {
-                        execao = "Usuario nao cadastrado.";
+                        excecao = "Usuário não está cadastrado.";
                     } catch (FirebaseAuthInvalidCredentialsException e) {
-                        execao = "E-mail nao corresponde a um usuario";
+                        excecao = "E-mail e senha não correspondem a um usuário cadastrado";
                     } catch (Exception e) {
-                        execao = "Erro ao cadastrar usuario:" + e.getMessage();
+                        excecao = "Erro ao cadastrar usuário: " + e.getMessage();
                         e.printStackTrace();
-                        ;
                     }
-                    Toast.makeText(LoginActivity.this, execao, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,
+                            excecao,
+                            Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -99,3 +101,4 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
+

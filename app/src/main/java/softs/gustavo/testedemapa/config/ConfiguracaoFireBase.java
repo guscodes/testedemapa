@@ -9,14 +9,15 @@ public class ConfiguracaoFireBase {
     private static FirebaseAuth firebaseAuth;
 
     // retonra a instancia do data base
-    public static DatabaseReference getFirebaseDatabase(){
-        if (databaseReference == null){
+    public static DatabaseReference getFirebaseDatabase() {
+        if (databaseReference == null) {
             databaseReference = FirebaseDatabase.getInstance().getReference();
         }
         return databaseReference;
     }
-    public  static FirebaseAuth getFirebaseAutenticacao(){
-        if (firebaseAuth == null){
+
+    public static FirebaseAuth getFirebaseAutenticacao() {
+        if (firebaseAuth == null) {
             firebaseAuth = firebaseAuth.getInstance();
         }
         return firebaseAuth;
