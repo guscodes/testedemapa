@@ -3,13 +3,20 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_cadastro">Cadastrar uma conta</string>
     <string name="title_Login">Acessar minha conta</string>
-    <string name="Checador_usuario">Usuario</string>
-    <string name="Checador_Motorista">Motorista</string>
+    <string name="Checador_usuario" translatable="false">Usuario</string>
+    <string name="Checador_Motorista" translatable="false">Motorista</string>
     <string name="title_activity_navegacao">navegacao</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_passageiro">PassageiroActivity</string>
     <string name="avisar_motorista">Sinalizar para motorista</string>
+    <string name="act_cadastro_nome" translatable="false">Nome completo</string>
+    <string name="act_cadastro_email" translatable="false">Email</string>
+    <string name="act_cadastro_senha" translatable="false">Senha</string>
+    <string name="act_acessar_conta_usuario" translatable="false">Usuario</string>
+    <string name="act_acesar_conta_password" translatable="false">Password</string>
+    <string name="act_acessar_conta_bt_entrar" translatable="false">Entrar</string>
+
 
 </resources>

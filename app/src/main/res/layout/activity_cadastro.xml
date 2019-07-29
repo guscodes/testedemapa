@@ -15,7 +15,7 @@
         android:layout_marginBottom="236dp"
         android:autoText="false"
         android:ems="10"
-        android:hint="Senha"
+        android:hint="@string/act_cadastro_senha"
         android:inputType="textPassword"
         android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
         android:layout_marginBottom="16dp"
         android:autoText="false"
         android:ems="10"
-        android:hint="Email"
+        android:hint="@string/act_cadastro_email"
         android:inputType="textEmailAddress"
         android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@+id/editCadastroSenha"
@@ -41,6 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtNomeCompleto" />
 
     <EditText
+
         android:id="@+id/txtNomeCompleto"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -49,7 +50,7 @@
         android:layout_marginEnd="16dp"
         android:autoText="false"
         android:ems="10"
-        android:hint="Nome completo "
+        android:hint="@string/act_cadastro_nome"
         android:inputType="textShortMessage|textPersonName|text"
         android:singleLine="true"
         app:layout_constraintEnd_toEndOf="parent"
