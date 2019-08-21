@@ -17,6 +17,10 @@
     <string name="act_acessar_conta_usuario" translatable="false">Usuario</string>
     <string name="act_acesar_conta_password" translatable="false">Password</string>
     <string name="act_acessar_conta_bt_entrar" translatable="false">Entrar</string>
+    /* ---------------- requisiçoes */
+
+    <string name="requisicoes_label">Requisiçoes</string>
+
 
 
 </resources>

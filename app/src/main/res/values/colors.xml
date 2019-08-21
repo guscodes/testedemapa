@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#7b7b7f</color>
     <color name="colorAccent">#474448</color>
     <color name="SmokyBlack">#08090b</color>
-    <color name="SlateGray">#6d8c93</color>
+    <color name="SlateGray">#1FA77C</color>
+    <color name="backgroud_request">#839DE6</color>
 </resources>
